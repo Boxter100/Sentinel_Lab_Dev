@@ -6,5 +6,5 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   integrations: [tailwind()],
   site: 'https://boxter100.github.io',
-  base: '/Sentinel_Lab_Dev',
+  base: 'Sentinel_Lab_Dev',
 });
