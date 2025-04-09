@@ -1,0 +1,238 @@
+---
+---
+
+<nav>
+  <div class="nav-container">
+    <div class="logo">
+      <img src="/Sentinel_Lab.png" alt="Sentinel Lab Logo" />
+    </div>
+    
+    <div class="nav-links">
+      <a href="#servicios">
+        <img src="/Servicios.png" alt="Servicios" class="nav-icon" />
+      </a>
+      <a href="#contacto">
+        <img src="/Contacto.png" alt="Contacto" class="nav-icon" />
+      </a>
+      <a href="#proyectos">
+        <img src="Proyectos.png" alt="Proyectos" class="nav-icon" />
+      </a>
+    </div>
+
+    <button class="menu-button" aria-label="Menu">
+      <img src="/Bloque_amarillo.png" alt="Menu" class="menu-icon" />
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu">
+  <a href="#servicios">
+    <img src="/Servicios.png" alt="Servicios" class="nav-icon" />
+  </a>
+  <a href="#contacto">
+    <img src="Contacto.png" alt="Contacto" class="nav-icon" />
+  </a>
+  <a href="#proyectos">
+    <img src="/Proyectos.png" alt="Proyectos" class="nav-icon" />
+  </a>
+</div>
+
+<style>
+  /* Variables globales */
+  :root {
+    --nav-height: 80px;
+    --nav-bg: rgba(219, 234, 254, 0.1);
+    --transition-speed: 0.3s;
+    --icon-height-desktop: 130px;
+    --icon-height-mobile: 150px;
+  }
+
+  /* Estilos base del navbar */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--nav-bg);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    transition: transform var(--transition-speed) ease;
+  }
+
+  .nav-hidden {
+    transform: translateY(-100%);
+  }
+  
+  .nav-container {
+    width: 95%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: var(--nav-height);
+  }
+
+  /* Estilos de los íconos y logo */
+  .logo img {
+    height: 180px;
+    width: auto;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    height: 100%;
+    align-items: center;
+  }
+
+  .nav-icon {
+    height: var(--icon-height-desktop);
+    width: auto;
+    transition: transform var(--transition-speed) ease;
+  }
+
+  .nav-icon:hover {
+    transform: scale(1.2);
+  }
+
+  /* Estilos del botón de menú */
+  .menu-button {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .menu-icon {
+    height: 65px;
+    width: auto;
+    transition: transform var(--transition-speed) ease;
+  }
+
+  .menu-icon.rotate-right {
+    transform: rotate(180deg);
+  }
+
+  /* Estilos del menú móvil */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    width: 100%;
+    background-color: var(--nav-bg);
+    backdrop-filter: blur(8px);
+    z-index: 99;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform var(--transition-speed) ease, opacity var(--transition-speed) ease;
+  }
+
+  /* Media queries para móvil */
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+    }
+
+    .menu-button {
+      display: flex;
+    }
+
+    .mobile-menu {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+
+    .mobile-menu.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .mobile-menu .nav-icon {
+      height: var(--icon-height-mobile);
+      animation: slideIn var(--transition-speed) ease forwards;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+</style>
+
+<script>
+  const menuButton = document.querySelector('.menu-button');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  const navbar = document.querySelector('nav');
+  const mobileMenuLinks = document.querySelectorAll('.mobile-menu a');
+  
+  let lastScroll = 0;
+
+  // Función auxiliar para manejar el cierre del menú móvil
+  const closeMobileMenu = () => {
+    if (!mobileMenu?.classList.contains('active')) return;
+    
+    mobileMenu.classList.remove('active');
+    const menuIcon = menuButton?.querySelector('.menu-icon');
+    if (menuIcon) {
+      menuIcon.classList.remove('rotate-right');
+      menuIcon.classList.add('rotate-left');
+    }
+  };
+  
+  // Handle scroll
+  window.addEventListener('scroll', () => {
+    const currentScroll = window.scrollY;
+    
+    if (mobileMenu?.classList.contains('active')) {
+      closeMobileMenu();
+      return;
+    }
+    
+    if (currentScroll > lastScroll && currentScroll > 80) {
+      navbar?.classList.add('nav-hidden');
+    } else {
+      navbar?.classList.remove('nav-hidden');
+    }
+    
+    lastScroll = currentScroll;
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    const isClickInsideMenu = mobileMenu?.contains(e.target as Node);
+    const isClickOnButton = menuButton?.contains(e.target as Node);
+    
+    if (!isClickInsideMenu && !isClickOnButton) {
+      closeMobileMenu();
+    }
+  });
+
+  // Handle mobile menu toggle
+  menuButton?.addEventListener('click', () => {
+    const menuIcon = menuButton.querySelector('.menu-icon');
+    const isMenuActive = mobileMenu?.classList.contains('active');
+    
+    if (menuIcon) {
+      menuIcon.classList.remove('rotate-right', 'rotate-left');
+      menuIcon.classList.add(isMenuActive ? 'rotate-left' : 'rotate-right');
+    }
+    
+    mobileMenu?.classList.toggle('active');
+  });
+
+  // Handle mobile menu link clicks
+  mobileMenuLinks.forEach(link => {
+    link.addEventListener('click', closeMobileMenu);
+  });
+</script>
